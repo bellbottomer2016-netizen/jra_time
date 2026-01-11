@@ -12,9 +12,19 @@ export class AudioController {
 
     // Must be called on user interaction to unlock audio
     public async init() {
-        if (this.context && this.context.state === 'suspended') {
+        if (!this.context) return;
+
+        if (this.context.state === 'suspended') {
             await this.context.resume();
         }
+
+        // iOS Hack: Play a silent buffer to fully unlock the audio engine
+        // Just resuming isn't always enough for subsequent calls.
+        const buffer = this.context.createBuffer(1, 1, 22050);
+        const source = this.context.createBufferSource();
+        source.buffer = buffer;
+        source.connect(this.context.destination);
+        source.start(0);
     }
 
     public playAlert(type: 'deadline' | 'pre-warning') {
