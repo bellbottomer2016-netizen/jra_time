@@ -1,7 +1,7 @@
 'use client';
 
 import { Race } from '@/lib/types';
-import { differenceInMinutes, format, isPast, parseISO } from 'date-fns';
+import { differenceInMinutes, differenceInSeconds, format, isPast, parseISO } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { useEffect, useRef } from 'react';
 import styles from './RaceTimeline.module.css';
@@ -49,9 +49,14 @@ export function RaceTimeline({ races, currentDate, linkProvider }: Props) {
                             <span className={styles.diff}>
                                 {finished
                                     ? '終了'
-                                    : minutesToStart <= 0
-                                        ? '発走!!'
-                                        : `あと${minutesToStart}分`}
+                                    : minutesToStart > 0
+                                        ? `あと${minutesToStart}分`
+                                        : (() => {
+                                            const secondsToStart = differenceInSeconds(raceTime, now);
+                                            if (secondsToStart > 0) return `あと${secondsToStart}秒`;
+                                            return '発走!!';
+                                        })()
+                                }
                             </span>
                         </div>
 

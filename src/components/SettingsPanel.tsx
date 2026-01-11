@@ -15,28 +15,42 @@ interface Props {
 export function SettingsPanel({ settings, onToggle, onEnableAudio, onRefresh, isRefreshing }: Props) {
     return (
         <div className="bg-card p-4 rounded mb-4 border text-white">
-            {!settings.audioEnabled && (
-                <button
-                    onClick={onEnableAudio}
-                    className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-4"
-                    style={{ background: 'var(--alert-red)' }}
-                >
-                    🔔 通知音を有効にする（タップしてください）
-                </button>
-            )}
-
-            <button
-                onClick={onRefresh}
-                disabled={isRefreshing}
-                className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded mb-4 flex justify-center items-center gap-2"
-            >
-                {isRefreshing ? (
-                    <span className="animate-spin">↻</span>
+            <div className="flex gap-2 mb-4">
+                {!settings.audioEnabled ? (
+                    <button
+                        onClick={onEnableAudio}
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        style={{ background: 'var(--alert-red)' }}
+                    >
+                        🔔 通知音を有効にする
+                    </button>
                 ) : (
-                    <span>↻</span>
+                    <button
+                        onClick={() => {
+                            // We should use the prop strictly
+                            onEnableAudio(); // This plays the 'pre-warning' sound in current impl
+                        }}
+                        className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm"
+                    >
+                        🔊 テスト再生<br /><span className="text-xs font-normal">(初回のみ押してください)</span>
+                    </button>
                 )}
-                最新の出馬表を取得（リロード）
-            </button>
+
+                <button
+                    onClick={onRefresh}
+                    disabled={isRefreshing}
+                    className="flex-1 bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded flex justify-center items-center gap-2"
+                >
+                    {isRefreshing ? <span className="animate-spin">↻</span> : <span>↻</span>}
+                    <span>更新</span>
+                </button>
+            </div>
+
+            {settings.audioEnabled && (
+                <p className="text-xs text-yellow-500 mb-4 text-center">
+                    ※ブラウザの制限により、このボタンを押すまで自動音声は再生されません。
+                </p>
+            )}
 
             <div className="flex flex-col gap-2">
                 <label className="flex items-center gap-2 cursor-pointer">

@@ -100,13 +100,21 @@ export default function Home() {
     setSettings((s) => ({ ...s, [key]: !s[key] }));
   };
 
-  // Main Clock Loop
+  // Main Clock Loop using Web Worker for background stability
   useEffect(() => {
-    const timer = setInterval(() => {
+    // Initialize Worker
+    const worker = new Worker('/timer-worker.js');
+
+    worker.onmessage = () => {
       const now = new Date(Date.now() + timeOffset);
       setAppTime(now);
-    }, 1000); // 1 sec tick
-    return () => clearInterval(timer);
+    };
+
+    worker.postMessage('start');
+
+    return () => {
+      worker.terminate();
+    };
   }, [timeOffset]);
 
   // Fetch Data
