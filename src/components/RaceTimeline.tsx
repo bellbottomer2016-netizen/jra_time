@@ -9,10 +9,9 @@ import styles from './RaceTimeline.module.css';
 interface Props {
     races: Race[];
     currentDate: Date;
-    linkProvider: 'netkeiba' | 'jra';
 }
 
-export function RaceTimeline({ races, currentDate, linkProvider }: Props) {
+export function RaceTimeline({ races, currentDate }: Props) {
     const now = currentDate;
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -76,20 +75,16 @@ export function RaceTimeline({ races, currentDate, linkProvider }: Props) {
                     </div>
                 );
 
-                if (race.url || linkProvider === 'jra') {
+                if (race.url) {
                     // Resolve URL safely
                     let href = '#';
-                    if (linkProvider === 'jra') {
-                        href = 'https://jra.jp/keiba/';
-                    } else if (race.url) {
-                        try {
-                            // race.url is likely relative like "../race/shutuba.html" or absolute
-                            // Base must be the location where relative links originate (top/race_list.html)
-                            href = new URL(race.url, 'https://race.netkeiba.com/top/').href;
-                        } catch (e) {
-                            console.error('Invalid URL:', race.url);
-                            href = '#';
-                        }
+                    try {
+                        // race.url is likely relative like "../race/shutuba.html" or absolute
+                        // Base must be the location where relative links originate (top/race_list.html)
+                        href = new URL(race.url, 'https://race.netkeiba.com/top/').href;
+                    } catch (e) {
+                        console.error('Invalid URL:', race.url);
+                        href = '#';
                     }
 
                     return (

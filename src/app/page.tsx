@@ -17,7 +17,7 @@ export default function Home() {
     audioEnabled: true, // User request: Default ON (Note: Browser may still require interaction)
     notifyOnlyHeavy: false, // Default: Filter OFF (Notify all at 1 min)
     notificationsEnabled: false,
-    linkProvider: 'netkeiba',
+    useVoiceAlert: false, // Default: Beep (false)
   });
   const [nextAlert, setNextAlert] = useState<{ time: Date; message: string } | null>(null);
 
@@ -26,7 +26,8 @@ export default function Home() {
     const saved = localStorage.getItem('jra_settings');
     if (saved) {
       try {
-        setSettings(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        setSettings((prev) => ({ ...prev, ...parsed }));
       } catch (e) {
         console.error('Failed to parse settings', e);
       }
@@ -143,6 +144,8 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  const processedAlerts = useRef(new Set<string>());
+
   // Alert Logic
   useEffect(() => {
     const checkAlerts = () => {
@@ -172,13 +175,20 @@ export default function Home() {
         }
 
         // Trigger if exactly now (within 1 sec)
+        const deadlineKey = `${race.id}-deadline`;
         if (Math.abs(diffDeadline) < 1) {
-          if (settings.audioEnabled) {
-            audioRef.current?.playAlert('deadline');
+          if (!processedAlerts.current.has(deadlineKey)) {
+            processedAlerts.current.add(deadlineKey);
+            if (settings.audioEnabled) {
+              audioRef.current?.playAlert('deadline', settings.useVoiceAlert, race.raceName);
+            }
+            if (settings.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
+              new Notification(nextTarget?.message || '締切直前です', { body: `${race.raceName} 締切まで残り2分` });
+            }
           }
-          if (settings.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
-            new Notification(nextTarget?.message || '締切直前です', { body: `${race.raceName} 締切まで残り2分` });
-          }
+        } else {
+          // Optional: allow re-trigger if time is significantly far (e.g. time travel reset)
+          // But for stability, let's keep it simple: once per session per race.
         }
 
         // 2. Pre-warning Alert (10 mins before) for Heavy/G1
@@ -196,12 +206,16 @@ export default function Home() {
           }
 
           // Trigger
+          const warnKey = `${race.id}-warn`;
           if (Math.abs(diffWarn) < 1) {
-            if (settings.audioEnabled) {
-              audioRef.current?.playAlert('pre-warning');
-            }
-            if (settings.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
-              new Notification(nextTarget?.message || '予鈴', { body: `${race.raceName} 10分前です` });
+            if (!processedAlerts.current.has(warnKey)) {
+              processedAlerts.current.add(warnKey);
+              if (settings.audioEnabled) {
+                audioRef.current?.playAlert('pre-warning', settings.useVoiceAlert, race.raceName);
+              }
+              if (settings.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
+                new Notification(nextTarget?.message || '予鈴', { body: `${race.raceName} 10分前です` });
+              }
             }
           }
         }
@@ -256,7 +270,7 @@ export default function Home() {
         currentDate={appTime}
       />
 
-      <RaceTimeline races={races} currentDate={appTime} linkProvider={settings.linkProvider || 'netkeiba'} />
+      <RaceTimeline races={races} currentDate={appTime} />
 
       {/* Debug Panel */}
       <div className="fixed bottom-0 left-0 w-full bg-black/80 backdrop-blur text-white p-2 text-xs border-t border-gray-700">

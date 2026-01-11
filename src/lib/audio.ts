@@ -27,9 +27,33 @@ export class AudioController {
         source.start(0);
     }
 
-    public playAlert(type: 'deadline' | 'pre-warning') {
+    public playAlert(type: 'deadline' | 'pre-warning', useVoice: boolean = false, raceName: string = '') {
         if (!this.context) return;
 
+        // Voice Alert Mode (Speech Synthesis)
+        if (useVoice && 'speechSynthesis' in window) {
+            // Cancel any pending speech
+            window.speechSynthesis.cancel();
+
+            const text = type === 'deadline'
+                ? `まもなく、${raceName}の締切です。`
+                : `${raceName}の検討を開始します。`;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ja-JP';
+            utterance.rate = 1.0;
+            utterance.volume = 1.0; // Max volume
+
+            // Try to force Japanese voice if available
+            const voices = window.speechSynthesis.getVoices();
+            const jaVoice = voices.find(v => v.lang.includes('ja'));
+            if (jaVoice) utterance.voice = jaVoice;
+
+            window.speechSynthesis.speak(utterance);
+            return; // Exit, don't play beep
+        }
+
+        // Standard Beep Mode (Oscillator)
         const osc = this.context.createOscillator();
         const gain = this.context.createGain();
 

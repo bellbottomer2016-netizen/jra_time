@@ -92,44 +92,30 @@ export function SettingsPanel({ settings, onToggle, onEnableAudio, onRefresh, is
                         onChange={() => onToggle('notifyOnlyHeavy')}
                         className="w-5 h-5 accent-yellow-500"
                     />
-                    <span>平場・特別レースの通知（1分前）を無効にする</span>
+                    <span>平場・特別レースの通知（2分前）を無効にする</span>
                 </label>
+
+                <hr className="border-gray-600 my-2" />
+
+                <label className="flex items-center gap-2 cursor-pointer text-green-300">
+                    <input
+                        type="checkbox"
+                        checked={!!settings.useVoiceAlert}
+                        onChange={() => onToggle('useVoiceAlert')}
+                        className="w-5 h-5 accent-green-500"
+                    />
+                    <span>音声読み上げを使用 (Voice Alert)</span>
+                </label>
+                <p className="text-xs text-secondary pl-7">
+                    ※ONにすると「ビープ音」の代わりに「レース名」を読み上げます。<br />
+                    iOSなどで音が鳴りにくい場合に有効です。
+                </p>
 
                 <p className="text-xs text-secondary mt-2">
                     ※チェックを入れると、G3・G2・G1以外のレースでは一切音が鳴りません。
                 </p>
             </div>
-
-            <div className="mt-4 border-t pt-2 border-gray-600">
-                <div className="text-sm mb-2 text-gray-300">リンク先設定:</div>
-                <div className="flex gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                            type="radio"
-                            name="linkProvider"
-                            checked={settings.linkProvider === 'netkeiba'}
-                            onChange={() => onToggle('linkProvider' as any)}
-                            className="scale-125"
-                        />
-                        <span>Netkeiba (推奨)</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                            type="radio"
-                            name="linkProvider"
-                            checked={settings.linkProvider === 'jra'}
-                            onChange={() => onToggle('linkProvider' as any)}
-                            className="scale-125"
-                        />
-                        <span>JRA公式 (トップのみ)</span>
-                    </label>
-                </div>
-                {settings.linkProvider === 'jra' && (
-                    <p className="text-xs text-yellow-400 mt-1">
-                        ※ JRA公式はトップページへのリンクとなります。
-                    </p>
-                )}
-            </div>
+            {/* Link config removed as requested (Unified to Netkeiba) */}
         </div>
     );
 }

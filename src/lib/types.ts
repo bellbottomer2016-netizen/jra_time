@@ -4,7 +4,7 @@ export interface Settings {
   audioEnabled: boolean;
   notifyOnlyHeavy: boolean;
   notificationsEnabled: boolean;
-  linkProvider: 'netkeiba' | 'jra';
+  useVoiceAlert: boolean;
 }
 
 export type Grade = 'G1' | 'G2' | 'G3' | 'Listed' | 'General';
