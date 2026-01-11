@@ -86,11 +86,23 @@ export async function fetchRaceData(): Promise<ScraperResult> {
                 if (startTimeText && raceNumText) {
                     const [hours, mins] = startTimeText.split(':').map(Number);
                     if (!isNaN(hours) && !isNaN(mins)) {
-                        // Create Date object for Today with this time
-                        // Note: If the race logic needs exact date matching (e.g. tomorrow), 
-                        // we'd need to parse the date header. 
-                        // For the purpose of "Clock", let's map to Today so alerts work 'now'.
-                        const startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, mins).toISOString();
+                        // Construct Date using targetDate (YYYYMMDD) if available, else standard JST fallback
+                        // targetDate e.g. "20260111"
+                        let year = now.getFullYear();
+                        let month = now.getMonth();
+                        let day = now.getDate();
+
+                        if (targetDate && targetDate.length === 8) {
+                            year = parseInt(targetDate.substring(0, 4));
+                            month = parseInt(targetDate.substring(4, 6)) - 1; // Month is 0-indexed
+                            day = parseInt(targetDate.substring(6, 8));
+                        }
+
+                        // Create ISO string forcing JST (+09:00)
+                        // Format: YYYY-MM-DDTHH:mm:00+09:00
+                        // Padding helper
+                        const pad = (n: number) => n.toString().padStart(2, '0');
+                        const startTime = `${year}-${pad(month + 1)}-${pad(day)}T${pad(hours)}:${pad(mins)}:00+09:00`;
 
                         races.push({
                             id: `netkeiba-${venueName}-${raceNumText}`, // unique path
