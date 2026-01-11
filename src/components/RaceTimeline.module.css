@@ -1,0 +1,137 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.card {
+    display: flex;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    padding: 12px;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    border-left: 5px solid transparent;
+}
+
+.finished {
+    background: rgba(200, 200, 200, 0.8);
+    color: #666;
+    opacity: 0.7;
+}
+
+.imminent {
+    border-left-color: var(--alert-red);
+    background: #fff0f0;
+    animation: pulse 2s infinite;
+}
+
+.timeBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    border-right: 1px solid #eee;
+    padding-right: 12px;
+    margin-right: 12px;
+}
+
+.time {
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: monospace;
+}
+
+.diff {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.infoBox {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.location {
+    font-weight: bold;
+    font-size: 0.9rem;
+    background: #333;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.grade {
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #fff;
+}
+
+.tokyo {
+    background: #3b82f6;
+}
+
+.nakayama {
+    background: #1f2937;
+}
+
+.kyoto {
+    background: #8b5cf6;
+}
+
+.hanshin {
+    background: #ec4899;
+}
+
+.default {
+    background: #4b5563;
+}
+
+.G1 {
+    background: #8a2be2;
+}
+
+.G2 {
+    background: #ef4444;
+}
+
+.G3 {
+    background: #22c55e;
+}
+
+.Listed {
+    background: #f59e0b;
+}
+
+.name {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}

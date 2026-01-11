@@ -1,0 +1,65 @@
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 20, 40, 20; /* Dark Green */
+  --background-end-rgb: 0, 0, 0;
+
+  --turf-green: #0a4f20;
+  --turf-light: #1a6f30;
+  --turf-accent: #fcd34d; /* Gold/Yellow for finish line feel */
+  --text-primary: #ffffff;
+  --text-secondary: #a0c4a0;
+  --alert-red: #ef4444;
+  --info-blue: #3b82f6;
+
+  --card-bg: rgba(255, 255, 255, 0.1);
+  --card-border: rgba(255, 255, 255, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Utilities not provided by vanilla CSS modules by default in Next.js setup */
+.text-center { text-align: center; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.w-full { width: 100%; }
+.mt-4 { margin-top: 1rem; }
+.mb-4 { margin-bottom: 1rem; }
+.p-4 { padding: 1rem; }
+.rounded { border-radius: 8px; }
+.font-bold { font-weight: bold; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-sm { font-size: 0.875rem; }
+.border { border: 1px solid var(--card-border); }
+.bg-card { background: var(--card-bg); backdrop-filter: blur(10px); }
