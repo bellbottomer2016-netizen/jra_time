@@ -19,16 +19,31 @@ export class AudioController {
         }
 
         // iOS Hack: Play a silent buffer to fully unlock the audio engine
-        // Just resuming isn't always enough for subsequent calls.
         const buffer = this.context.createBuffer(1, 1, 22050);
         const source = this.context.createBufferSource();
         source.buffer = buffer;
         source.connect(this.context.destination);
         source.start(0);
+
+        // Prime Speech Synthesis (iOS requires 1st speak to be in gesture)
+        if ('speechSynthesis' in window) {
+            const emptyUtterance = new SpeechSynthesisUtterance('');
+            emptyUtterance.volume = 0;
+            window.speechSynthesis.speak(emptyUtterance);
+        }
     }
 
-    public playAlert(type: 'deadline' | 'pre-warning', useVoice: boolean = false, raceName: string = '') {
+    public async playAlert(type: 'deadline' | 'pre-warning', useVoice: boolean = false, raceName: string = '') {
         if (!this.context) return;
+
+        // Ensure context is running (iOS suspends it in background)
+        if (this.context.state === 'suspended') {
+            try {
+                await this.context.resume();
+            } catch (e) {
+                console.error('Failed to resume audio context:', e);
+            }
+        }
 
         // Voice Alert Mode (Speech Synthesis)
         if (useVoice && 'speechSynthesis' in window) {
